@@ -23,7 +23,10 @@ def parseHand(f):
         pos = nll[2]
         playermap[pos] = num
         nextline = f.readline()
-    return playermap
+    seattopos = {v: ((v-playermap['Small']) % 6) for v in playermap.values()}
+    possiblepos = sorted(list(seattopos.values()))
+    seattopos = {k: possiblepos.index(v) for k, v in seattopos.items()}
+    return seattopos, playermap
         
         
 class Player:
