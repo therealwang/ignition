@@ -13,14 +13,21 @@ def parseFile(filepath):
         parseHand(f)
     
     
-def parseHand(file):
+def parseHand(f):
     f.readline()
     nextline = f.readline()
+    playermap = dict()
     while nextline.startswith('Seat'):
+        nll = nextline.split()
+        num = int(nll[1][0])
+        pos = nll[2]
+        playermap[pos] = num
+        nextline = f.readline()
+    return playermap
         
         
 class Player:
     def __init__(self):
-        
+       pass 
     
 filepath = 'C:\\Ignition\\Hand History\\14167489\\HH20180325-141122 - 5814033 - RING - $0.10-$0.25 - HOLDEM - NL - TBL No.14766355.txt'
