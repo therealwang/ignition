@@ -63,7 +63,7 @@ for card in ranks:
 def isStraight(handNoSuit):
     curr = handNoSuit[0]
     for c in handNoSuit[1:]:
-        if rankmap[c] != rankmap[curr] + 1:
+        if rankmap[c] != rankmap[curr] + 1 and not (rankmap[c] == 9 and rankmap[curr] == 0):
             return False
         curr = c
     
@@ -90,6 +90,8 @@ def scoreHand(hand):
     else:
         score = [cardCountDict[cardCounts]]
         
+    if straight and sortedHand[0] == 'A' and sortedHand[1] == '5':
+        sortedHand = sortedHand[1:]
     score += [ranks.index(card) for card in sortedHand]
     return score
                 
