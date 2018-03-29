@@ -9,11 +9,11 @@ Created on Wed Mar 28 19:22:20 2018
 from collections import Counter
 
 HAND_SIZE = 5
-suits = 'cdhs'
-ranks = 'AKQJT98765432'
-rankmap = {r: ranks.index(r) for r in ranks}
+SUITS = 'cdhs'
+RANKS = 'AKQJT98765432'
+RANKMAP = {r: RANKS.index(r) for r in RANKS}
 
-handranks = {0: 'Straight Flush',
+HAND_RANKS = {0: 'Straight Flush',
              1: 'Four of a Kind',
              2: 'Full House',
              3: 'Flush',
@@ -24,7 +24,7 @@ handranks = {0: 'Straight Flush',
              8: 'High Card'
              }
 
-cardCountDict = {
+CARD_COUNT_DICT = {
             (1,4): 1,
             (2,3): 2,
             (1,1,3): 5,
@@ -33,50 +33,51 @@ cardCountDict = {
             (1,1,1,1,1): 8
         }
 
-allHands = []
-temp = [''] * 5
+ALL_HANDS = []
+
 
 def addNextCard(hand):
-    global allHands
-    if len(hand)==5:
-        if hand != hand[0] * 5:
-            allHands.append(hand + 'o')
+    global ALL_HANDS
+    if len(hand)==HAND_SIZE:
+        if hand != hand[0] * HAND_SIZE:
+            ALL_HANDS.append(hand + 'o')
         return
-    for card in ranks[ranks.index(hand[-1]):]:
+    for card in RANKS[RANKS.index(hand[-1]):]:
         addNextCard(hand + card)
 
 def addFlush(hand):
-    global allHands
-    if len(hand)==5:
-        if hand != hand[0] * 5:
-            allHands.append(hand + 's')
+    global ALL_HANDS
+    if len(hand)==HAND_SIZE:
+        if hand != hand[0] * HAND_SIZE:
+            ALL_HANDS.append(hand + 's')
         return
-    for card in ranks[ranks.index(hand[-1])+1:]:
+    for card in RANKS[RANKS.index(hand[-1])+1:]:
         addFlush(hand + card)
 
-for card in ranks:
+for card in RANKS:
     addNextCard(card)
     
-for card in ranks:
+for card in RANKS:
     addFlush(card)
+
     
-def isStraight(handNoSuit):
-    curr = handNoSuit[0]
-    for c in handNoSuit[1:]:
-        if rankmap[c] != rankmap[curr] + 1 and not (rankmap[c] == 9 and rankmap[curr] == 0):
+def isStraight(hand_no_suit):
+    curr = hand_no_suit[0]
+    for c in hand_no_suit[1:]:
+        if RANKMAP[c] != RANKMAP[curr] + 1 and not (RANKMAP[c] == 9 and RANKMAP[curr] == 0):
             return False
         curr = c
     
     return True
 
 def scoreHand(hand):
-    handNoSuit = hand[:-1]
-    straight = isStraight(handNoSuit)
+    hand_no_suit = hand[:-1]
+    straight = isStraight(hand_no_suit)
     flush = hand[-1] == 's'
     
-    cardCounter = Counter(handNoSuit)
+    cardCounter = Counter(hand_no_suit)
     sortedHand = sorted(cardCounter.keys(), 
-            key = lambda card: (cardCounter[card],13 -ranks.index(card)),
+            key = lambda card: (cardCounter[card],13 -RANKS.index(card)),
             reverse = True
             )
     cardCounts = tuple(sorted(cardCounter.values()))
@@ -88,11 +89,12 @@ def scoreHand(hand):
     elif flush:
         score = [3]
     else:
-        score = [cardCountDict[cardCounts]]
+        score = [CARD_COUNT_DICT[cardCounts]]
         
     if straight and sortedHand[0] == 'A' and sortedHand[1] == '5':
         sortedHand = sortedHand[1:]
-    score += [ranks.index(card) for card in sortedHand]
+    score += [RANKS.index(card) for card in sortedHand]
     return score
                 
-allHands = sorted(allHands, key = scoreHand)    
+ALL_HANDS = sorted(ALL_HANDS, key = scoreHand)    
+ALL_HANDS_DICT = {hand: ALL_HANDS.index(hand) for hand in ALL_HANDS}
