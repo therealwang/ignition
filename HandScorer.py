@@ -98,3 +98,46 @@ def scoreHand(hand):
                 
 ALL_HANDS = sorted(ALL_HANDS, key = scoreHand)    
 ALL_HANDS_DICT = {hand: ALL_HANDS.index(hand) for hand in ALL_HANDS}
+
+'''
+Attempt to create a dict of mappings from 7 card hands
+'''
+def findStraight(vals_list):
+    new_list = [vals_list[0]]
+    for v in vals_list[1:]:
+        if v != new_list[-1]:
+            new_list.append(v)
+    if len(new_list) < 5:
+        return ''
+    longest_straight = [1]
+    for c1, c2 in zip(new_list, new_list[1:]):
+        if RANKMAP[c1] == RANKMAP[c2] - 1:
+            longest_straight.append(min(longest_straight[-1] + 1,5))
+        elif (RANKMAP[new_list[0]] == 0 and RANKMAP[c2] == 9):
+            longest_straight.append(2)
+        else:
+            longest_straight.append(1)
+            
+    if 5 not in longest_straight:
+        return ''
+    else:
+        ind = longest_straight.index(5)
+        if new_list[ind] == '2':
+            if new_list[ind-4] != '6':
+                return ''.join([new_list[0]] + new_list[ind-3:ind+1])
+        return ''.join(new_list[ind-4:ind+1])
+                        
+    
+    
+def make7Hand(hand_list):
+    suits = defaultdict(lambda: [])
+    vals = defaultdict(lambda: 0)
+    
+    for h in hand_list:
+        v, s = h
+        vals[v] += 1
+        suits[s].append(v)
+        
+    return vals, suits
+
+
