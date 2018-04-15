@@ -7,19 +7,23 @@ Created on Tue Mar 27 18:36:12 2018
 
 
 from functools import total_ordering
-import HandScorer as hs
+from collections import defaultdict
 from HandScorer import ALL_HANDS_DICT
     
 HAND_SIZE = 5
 SUITS = 'cdhs'
 RANKS = 'AKQJT98765432'  
 RANKMAP = {r: RANKS.index(r) for r in RANKS}
+SUITMAP = {s: SUITS.index(s) for s in SUITS}
+
+DECK = set([v+s for v in RANKS for s in SUITS])
 
 
 def sortHand(h):
     return sorted(h, key = lambda w: [RANKMAP[c] for c in w])
-    
 
+
+    
 
 @total_ordering
 class Hand:

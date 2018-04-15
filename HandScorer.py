@@ -6,7 +6,7 @@ Created on Wed Mar 28 19:22:20 2018
 """
 
 
-from collections import Counter
+from collections import Counter, defaultdict
 
 HAND_SIZE = 5
 SUITS = 'cdhs'
@@ -98,6 +98,7 @@ def scoreHand(hand):
                 
 ALL_HANDS = sorted(ALL_HANDS, key = scoreHand)    
 ALL_HANDS_DICT = {hand: ALL_HANDS.index(hand) for hand in ALL_HANDS}
+ALL_HANDS_DICT[''] = float('inf')
 
 '''
 Attempt to create a dict of mappings from 7 card hands
@@ -139,5 +140,24 @@ def make7Hand(hand_list):
         suits[s].append(v)
         
     return vals, suits
+
+def score7Hand(hand_list):
+    vals, suits = make7Hand(hand_list)
+    uniquevals = sorted(vals.keys(), key = RANKMAP.get)
+    cands = []
+    candstr = findStraight(uniquevals)
+    if candstr != '':
+        cands.append(candstr + 'o')
+    candvals = sorted(vals.items(), key = lambda card: (vals[card[0]], 13-RANKS.index(card[0])), reverse = True)
+    candvals = ''.join([v * count for v, count in candvals])
+    candvals = candvals[:5]
+    candvals = ''.join(sorted(candvals, key = RANKMAP.get)) + 'o'
+    cands.append(candvals)
+    for s in suits:
+        temp = findStraight(suits[s])
+        if temp !=  '':
+            cands.append(temp + 's')
+    candscores = [ALL_HANDS_DICT[c] for c in cands]
+    return min(candscores)
 
 
